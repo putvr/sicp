@@ -6,6 +6,3 @@
         (gcd b (remainder a b))))
 
 (gcd 206 40)
-
-
-
