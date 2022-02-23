@@ -1,25 +1,30 @@
 #lang racket
 
-(define (rec n)
-  (if (< n 3) 
+(require rackunit)
+
+(define (f n)
+  (if (< n 3)
       n
-      (+ (rec (- n 1))
-         (rec (- n 2))
-         (rec (- n 3)))))
+      (+ (f (- n 1))
+         (* (f (- n 2)) 2)
+         (* (f (- n 3)) 3))))
 
-(rec 3) ; 3
-(rec 4) ; 6
-(rec 5) ; 11
-(rec 10) ; 230
-
-(define (iter n)
-  (define (iterate a b c count)
+(define (f-iter n)
+  (define (i a b c count)
     (if (= count 0)
-        (c)
-        (iterate (+ a b c) (+ a b) c (- count 1))))
-  (iterate 3 2 1 n))
+        a
+        (i (+ a (* 2 b) (* 3 c)) a b (- count 1))))
+  (if (< n 3)
+      n
+      (i 2 1 0 (- n 2))))
 
-(rec 3) ; 3
-(rec 4) ; 6
-(rec 5) ; 11
-(rec 10) ; 230
+
+(check-equal? (f 3) 4)
+(check-equal? (f 4) 11)
+
+(check-equal? (f-iter 1) 1)
+(check-equal? (f-iter 3) 4)
+(check-equal? (f-iter 4) 11)
+(check-equal? (f-iter 5) 25)
+(check-equal? (f-iter 6) 59)
+(check-equal? (f-iter 7) 142)
